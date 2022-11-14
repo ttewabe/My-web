@@ -1,32 +1,45 @@
 import React, { Component } from 'react';
 import Header from './HeaderComponent';
-import Fly from './FlyComponent';
-import Home from './HomeComponent';
+import Footer from './FooterComponent';
 import About from './AboutComponent';
-import Project from './ProjectComponent';
-import Skill from './SkillComponent';
+import Service from './ServiceComponent';
+import Support from './SupportComponent';
 import Contact from './ContactComponent';
 import { Switch, Route, Redirect, withRouter} from 'react-router-dom';
+import { connect } from 'react-redux';
 
-
-
+const mapStateToProps = state => {
+    return {
+        customers: state.customers,
+        infos: state.infos,
+        helps: state.helps,
+        finances: state.finances,
+    };
+}
 class Main extends Component {
     render() {
-        
+        const HomePage = () => {
+            return (
+                <About
+                    finance={this.props.finances.filter( finance => finance.featured)[0]}
+                    info={this.props.infos.filter(info => info.featured)[0]}
+                    help={this.props.helps.filter( help => help.featured)[0]}
+                />
+            );
+        };
         return (
-        <div >
-            <Header />
-            <Fly/>
-            <Switch>
-                <Route path='/home' component={Home} />
-                <Route exact path='/about' component={About} />
-                <Route exact path='/skill' component={Skill} />
-                <Route exact path='/project' component={Project} />
-                <Route exact path='/contact' component={Contact} />
-                <Redirect to='/home' />
-            </Switch>
-        </div>
+            <div >
+                <Header />
+                <Switch>
+                    <Route path='/home' component={HomePage} />
+                    <Route exact path='/service' component={() => <Service customers={this.props.customers} />} />
+                    <Route exact path='/support' component={Support} />
+                    <Route exact path='/contact' component={Contact} />
+                    <Redirect to='/home' />
+                    </Switch>
+                <Footer />
+            </div>
         );
     };
 }
-export default Main;
+export default withRouter(connect(mapStateToProps)(Main));
